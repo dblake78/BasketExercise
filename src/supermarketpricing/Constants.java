@@ -2,7 +2,7 @@ package supermarketpricing;
 
 public class Constants {
 
-	public static enum OfferTypes {
+	public static enum OfferType {
 		WEIGHT, MULTIPLE, BULK
 	}
 	

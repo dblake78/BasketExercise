@@ -1,7 +1,5 @@
 package supermarketpricing;
 
-import supermarketpricing.Constants.Units;
-
 public class Product {
 
 	private String name;
