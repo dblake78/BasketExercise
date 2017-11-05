@@ -9,31 +9,8 @@ public class SupermarketPricing {
 
 		Order order = new Order();
 		
-
 		/**
-		 * In a working application the offer and product records would be stored
-		 * in a database. I'm mocking up some records here and populating them
-		 * as if they had been read in and formatted into objects
-		 */
-		
-		/**
-		 * Set up the offer objects
-		 * 
-		 * An offer can be one of three types, mapped to the Unit enum.
-		 * 
-		 * WEIGHT:
-		 * The price for a product associated with this offer will be calculated based upon
-		 * offer price / product price
-		 * 
-		 * MULTIPLE:
-		 * The price for a product associated with this offer will be calculated based upon
-		 * product price x multiple price amount
-		 * Any left over products will be charged at standard product price
-		 * 
-		 * BULK:
-		 * The price for a product associated with this offer will be calculated based upon
-		 * 'Bulk purchase amount' of products = price
-		 * Any left over products will be charged at standard product price
+		 * Offer object set up
 		 */
 		Offer weightOffer = new Offer(OfferType.WEIGHT, 1);
 		weightOffer.setUnit(Units.WEIGHT);
@@ -50,11 +27,7 @@ public class SupermarketPricing {
 		bulkBuyOffer.setPrice(1.00f);
 		
 		/**
-		 * Set up the product objects
-		 * 
-		 * The product object consists of an id, a name, a standard unit price/weight and an offer (if applicable)
-		 * If an offer is associated then it will be passed into the final price calculation, otherwise
-		 * the standard product price will apply
+		 * Product object set up
 		 */
 		Product beans = new Product("Beans", 0.5f, 1, multiplePurchaseOffer);
 		Product coke = new Product("Coke", 0.7f, 2, bulkBuyOffer);
@@ -80,8 +53,6 @@ public class SupermarketPricing {
 		order.addProductToOrder(beans);
 		order.addProductToOrder(beans);
 		order.addProductToOrder(beans);
-		
-		order.outputReceipt();
 	}
 	
 }

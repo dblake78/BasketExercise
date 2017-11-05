@@ -12,12 +12,21 @@ public class Order {
 	
 	public void addProductToOrder(Product product) {
 		if (product.getOffer() != null && !this.uniqueOffers.contains(product.getOffer())) {
-			//if we've not got this offer in the list already then 
-			//add it to the unique list
+			//if we've not added a product with this offer already then 
+			//add it to the unique list of offers
 			uniqueOffers.add(product.getOffer());
 		}
 		this.products.add(product);
 		
+		calculateSavings(product);
+		outputReceipt();
+	}
+	
+	/**
+	 * Calculate the savings on the list of products so far
+	 * @param product
+	 */
+	private void calculateSavings(Product product) {
 		for (Offer uniqueOffer : uniqueOffers) {
 			if (product.getOffer() != null && uniqueOffer.getId() == product.getOffer().getId()) {
 				int qualifyingOffers = 0;
@@ -27,12 +36,11 @@ public class Order {
 				case BULK :
 					qualifyingOffers = (offerProducts.size() - (offerProducts.size() % uniqueOffer.getBulkPurchaseAmount())) / uniqueOffer.getBulkPurchaseAmount();
 					if (qualifyingOffers > 0) {
-						Saving saving = savingsForOffer(product.getOffer().getId());
+						Saving saving = getSavingForOffer(product.getOffer().getId());
 						if (saving == null) {
 							saving = new Saving();
 							savings.add(saving);
 						}
-						saving.setOffer(uniqueOffer);
 						saving.setProduct(product);
 						saving.setValue(-((product.getPrice() * uniqueOffer.getBulkPurchaseAmount()) - uniqueOffer.getPrice()) * qualifyingOffers);
 					}
@@ -40,12 +48,11 @@ public class Order {
 				case MULTIPLE :
 					qualifyingOffers = (offerProducts.size() - (offerProducts.size() % uniqueOffer.getMultiplePurchaseAmount())) / uniqueOffer.getMultiplePurchaseAmount();
 					if (qualifyingOffers > 0) {
-						Saving saving = savingsForOffer(product.getOffer().getId());
+						Saving saving = getSavingForOffer(product.getOffer().getId());
 						if (saving == null) {
 							saving = new Saving();
 							savings.add(saving);
 						}
-						saving.setOffer(uniqueOffer);
 						saving.setProduct(product);
 						saving.setValue((-product.getPrice() * (uniqueOffer.getMultiplePurchaseAmount() - uniqueOffer.getMultiplePriceAmount())) * qualifyingOffers);						
 					}
@@ -55,7 +62,6 @@ public class Order {
 				}
 			}
 		}
-				
 	}
 	
 	public void outputReceipt() {
@@ -75,12 +81,12 @@ public class Order {
 		
 		for (Saving saving : savings) {
 			savingsTotal += saving.getValue();
-			switch (saving.getOffer().getOfferType()) {
+			switch (saving.getProduct().getOffer().getOfferType()) {
 			case MULTIPLE :
-				System.out.println(String.format("%s %d for %d\t\t%.2f", saving.getProduct().getName(), saving.getOffer().getMultiplePurchaseAmount(), saving.getOffer().getMultiplePriceAmount(), saving.getValue()));
+				System.out.println(String.format("%s %d for %d\t\t%.2f", saving.getProduct().getName(), saving.getProduct().getOffer().getMultiplePurchaseAmount(), saving.getProduct().getOffer().getMultiplePriceAmount(), saving.getValue()));
 				break;
 			case BULK :
-				System.out.println(String.format("%s %d for £%.2f\t\t%.2f", saving.getProduct().getName(), saving.getOffer().getBulkPurchaseAmount(), saving.getOffer().getPrice(), saving.getValue()));
+				System.out.println(String.format("%s %d for £%.2f\t\t%.2f", saving.getProduct().getName(), saving.getProduct().getOffer().getBulkPurchaseAmount(), saving.getProduct().getOffer().getPrice(), saving.getValue()));
 				break;
 			default :
 				break;
@@ -108,9 +114,9 @@ public class Order {
 		return returnList;
 	}
 	
-	private Saving savingsForOffer(long offerId) {
+	private Saving getSavingForOffer(long offerId) {
 		for (Saving saving : savings) {
-			if (saving.getOffer().getId() == offerId) {
+			if (saving.getProduct().getOffer().getId() == offerId) {
 				return saving; 
 			}
 		}
