@@ -1,5 +1,3 @@
-# qmetric
-
 In a working application the offer and product records would be stored
 in a database. I'm mocking up some records here and populating them
 as if they had been read in from a data store and formatted into objects
